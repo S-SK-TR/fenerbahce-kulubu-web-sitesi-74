@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import useFanStore from '../../shared/store/fanStore';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const FanProfileDisplay: React.FC = () => {
   const { fanProfile, clearFanProfile } = useFanStore();
@@ -14,9 +16,11 @@ const FanProfileDisplay: React.FC = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
-      <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
-        <h2 className="text-2xl font-semibold text-white mb-4">Taraftar Profili</h2>
-        <div className="space-y-4">
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-white">Taraftar Profili</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div>
             <h3 className="text-sm font-medium text-gray-400">Ad</h3>
             <p className="text-lg text-white">{fanProfile.name}</p>
@@ -33,17 +37,16 @@ const FanProfileDisplay: React.FC = () => {
             <h3 className="text-sm font-medium text-gray-400">Favori An</h3>
             <p className="text-lg text-white whitespace-pre-line">{fanProfile.favoriteMoment}</p>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <motion.button
+      <Button
+        variant="destructive"
         onClick={clearFanProfile}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200"
+        className="w-full"
       >
         Profili Sil
-      </motion.button>
+      </Button>
     </motion.div>
   );
 };

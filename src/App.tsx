@@ -3,6 +3,7 @@ import FanProfileForm from './features/fan-profile/FanProfileForm';
 import FanProfileDisplay from './features/fan-profile/FanProfileDisplay';
 import useFanStore from './shared/store/fanStore';
 import { motion } from 'framer-motion';
+import { Card } from '@/components/ui/card';
 
 function App() {
   const { fanProfile } = useFanStore();

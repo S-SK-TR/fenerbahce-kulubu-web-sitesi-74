@@ -1,8 +1,8 @@
 export interface FanProfile {
   name: string;
+  email: string;
   favoritePlayer: string;
-  membershipDate: string;
-  notificationsEnabled: boolean;
+  favoriteMoment: string;
 }
 
 export interface FanStoreState {
