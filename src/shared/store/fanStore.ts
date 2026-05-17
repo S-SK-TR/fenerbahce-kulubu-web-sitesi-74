@@ -1,17 +1,30 @@
 import { create } from 'zustand';
-import { FanStoreState, FanProfile } from '../types/fanStore';
+import { persist } from 'zustand/middleware';
 
-const useFanStore = create<FanStoreState>((set) => ({
-  fanProfile: null,
+interface FanProfile {
+  name: string;
+  email: string;
+  favoritePlayer: string;
+  favoriteMoment: string;
+}
 
-  updateFanProfile: (profile: FanProfile) => set({ fanProfile: profile }),
-  toggleNotifications: () => set((state) => ({
-    fanProfile: state.fanProfile ? {
-      ...state.fanProfile,
-      notificationsEnabled: !state.fanProfile.notificationsEnabled
-    } : null
-  })),
-  resetFanProfile: () => set({ fanProfile: null })
-}));
+interface FanStore {
+  fanProfile: FanProfile | null;
+  setFanProfile: (profile: FanProfile) => void;
+  clearFanProfile: () => void;
+}
+
+const useFanStore = create<FanStore>()(
+  persist(
+    (set) => ({
+      fanProfile: null,
+      setFanProfile: (profile) => set({ fanProfile: profile }),
+      clearFanProfile: () => set({ fanProfile: null }),
+    }),
+    {
+      name: 'fan-profile-storage',
+    }
+  )
+);
 
 export default useFanStore;

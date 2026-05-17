@@ -1,88 +1,82 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { motion } from 'framer-motion';
 import useFanStore from '../../shared/store/fanStore';
 
-const fanProfileSchema = z.object({
-  name: z.string().min(2, 'İsim en az 2 karakter olmalı'),
-  favoritePlayer: z.string().min(2, 'Favori oyuncu en az 2 karakter olmalı'),
-  membershipDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Geçerli bir tarih girin (YYYY-AA-GG)'),
-  notificationsEnabled: z.boolean()
-});
-
-type FanProfileFormData = z.infer<typeof fanProfileSchema>;
+interface FanProfileFormData {
+  name: string;
+  email: string;
+  favoritePlayer: string;
+  favoriteMoment: string;
+}
 
 const FanProfileForm: React.FC = () => {
-  const { fanProfile, updateFanProfile } = useFanStore();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<FanProfileFormData>({
-    resolver: zodResolver(fanProfileSchema),
-    defaultValues: fanProfile || {
-      name: '',
-      favoritePlayer: '',
-      membershipDate: new Date().toISOString().split('T')[0],
-      notificationsEnabled: true
-    }
-  });
+  const { register, handleSubmit } = useForm<FanProfileFormData>();
+  const setFanProfile = useFanStore(state => state.setFanProfile);
 
   const onSubmit = (data: FanProfileFormData) => {
-    updateFanProfile(data);
+    setFanProfile(data);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <motion.form
+      onSubmit={handleSubmit(onSubmit)}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6"
+    >
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">İsim</label>
+        <label htmlFor="name" className="block text-sm font-medium text-white mb-1">Adınız</label>
         <input
           id="name"
-          {...register('name')}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          {...register('name', { required: true })}
+          className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder:text-gray-400"
+          placeholder="Adınızı girin"
         />
-        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
       </div>
 
       <div>
-        <label htmlFor="favoritePlayer" className="block text-sm font-medium text-gray-700">Favori Oyuncu</label>
+        <label htmlFor="email" className="block text-sm font-medium text-white mb-1">E-posta</label>
+        <input
+          id="email"
+          type="email"
+          {...register('email', { required: true })}          
+          className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder:text-gray-400"
+          placeholder="E-posta adresinizi girin"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="favoritePlayer" className="block text-sm font-medium text-white mb-1">Favori Oyuncu</label>
         <input
           id="favoritePlayer"
-          {...register('favoritePlayer')}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          {...register('favoritePlayer', { required: true })}          
+          className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder:text-gray-400"
+          placeholder="Favori oyuncunuzun adını girin"
         />
-        {errors.favoritePlayer && <p className="mt-1 text-sm text-red-600">{errors.favoritePlayer.message}</p>}
       </div>
 
       <div>
-        <label htmlFor="membershipDate" className="block text-sm font-medium text-gray-700">Üyelik Tarihi</label>
-        <input
-          id="membershipDate"
-          type="date"
-          {...register('membershipDate')}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        <label htmlFor="favoriteMoment" className="block text-sm font-medium text-white mb-1">Favori An</label>
+        <textarea
+          id="favoriteMoment"
+          {...register('favoriteMoment', { required: true })}          
+          className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder:text-gray-400"
+          placeholder="Favori anınızı anlatın"
+          rows={4}
         />
-        {errors.membershipDate && <p className="mt-1 text-sm text-red-600">{errors.membershipDate.message}</p>}
       </div>
 
-      <div className="flex items-center">
-        <input
-          id="notificationsEnabled"
-          type="checkbox"
-          {...register('notificationsEnabled')}
-          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-        />
-        <label htmlFor="notificationsEnabled" className="ml-2 block text-sm text-gray-900">Bildirimleri Etkinleştir</label>
-      </div>
-
-      <button
+      <motion.button
         type="submit"
-        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
       >
-        Kaydet
-      </button>
-    </form>
+        Profili Kaydet
+      </motion.button>
+    </motion.form>
   );
 };
 
